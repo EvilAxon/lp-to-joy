@@ -1,0 +1,17 @@
+{
+  "name": "lpdrv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "start": "ts-node ./src/main.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.5.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6",
+    "usb": "^2.10.0"
+  }
+}
