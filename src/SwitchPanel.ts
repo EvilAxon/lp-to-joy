@@ -1,4 +1,6 @@
 ﻿import EventEmitter from "events";
+import {Device, InEndpoint, Interface} from "usb";
+var usb = require("usb");
 
 export class ButtonDef
 {
@@ -14,9 +16,10 @@ export class ButtonDef
 
 export class SwitchPanel extends EventEmitter
 {
-    public vendorId:number          = 0x06a3;
-    public productId:number         = 0x0d67;
-    public readPayloadSize:number   = 3;
+    private vendorId:number          = 0x06a3;
+    private productId:number         = 0x0d67;
+    private readPayloadSize:number   = 3;
+    private pollingSize:number       = 3;
 
     public buttons:Record<string, ButtonDef> =
     { // Byte 0
@@ -46,10 +49,55 @@ export class SwitchPanel extends EventEmitter
     
     // Stores current buttons status
     private currentStatus:Uint8Array = new Uint8Array([0,0,0]);
+    private device:Device|undefined;
+    private devInterface:Interface|undefined;
+    private devEndpoint:InEndpoint|undefined;
+    
+    
 
     public constructor() 
     {
         super();
+    }
+    
+    public open() : void
+    {
+        this.device = usb.findByIds(this.vendorId, this.productId);
+        if(this.device == null ) throw new Error("Could not open the Switch Panel. Check USB connection and assure the device is working properly!");
+        this.device.open();
+        this.devInterface = this.device.interface(0);
+        if(this.devInterface == null ) throw new Error("Could not open device Interface.");
+        this.devEndpoint = this.devInterface.endpoints[0] as InEndpoint;
+        if(this.devEndpoint == null ) throw new Error("Could not open device Endpoint.");
+        this.devEndpoint.on("data", this.dataReceiver);
+    }
+    
+    public close() : void
+    {
+        this.device?.close();
+    }
+    private dataReceiver(data:Buffer):void
+    {
+        this.setNewStatus(data);
+    }
+    
+    public startPolling() : void
+    {
+        try 
+        {
+            this.devInterface?.claim();    
+        }
+        catch(error:any)
+        {
+            throw new Error("Could not claim the interface!");
+        }
+        this.devEndpoint?.startPoll(this.pollingSize, this.readPayloadSize);
+    }
+    
+    public stopPolling() : void
+    {
+        this.devEndpoint?.stopPoll();
+        this.devInterface?.release();
     }
     
     public setNewStatus( newStatus:Buffer ):void

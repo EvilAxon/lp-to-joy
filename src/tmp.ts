@@ -1,5 +1,4 @@
-﻿import {Device, LibUSBException} from "usb";
-var usb = require('usb');
+﻿
 
 
 const devices = usb.getDeviceList();
@@ -26,6 +25,8 @@ const iFace = device.interface(0);
 console.log(iFace.endpoints);
 //const endpoint = iFace.endpoint(1); // Sostituisci con il numero dell'endpoint corretto
 const endpoint = iFace.endpoints[0];
+
+
 
 iFace.claim();
 // Set up the bulk transfer
