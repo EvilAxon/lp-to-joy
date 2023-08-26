@@ -69,16 +69,19 @@ export class SwitchPanel extends EventEmitter
         if(this.devInterface == null ) throw new Error("Could not open device Interface.");
         this.devEndpoint = this.devInterface.endpoints[0] as InEndpoint;
         if(this.devEndpoint == null ) throw new Error("Could not open device Endpoint.");
-        this.devEndpoint.on("data", this.dataReceiver);
+        this.devEndpoint.on("data", (data:Buffer) =>
+        {
+            SwitchPanel.dataReceiver(this, data);
+        });
     }
     
     public close() : void
     {
         this.device?.close();
     }
-    private dataReceiver(data:Buffer):void
+    private static dataReceiver(mainObject:SwitchPanel, data:Buffer):void
     {
-        this.setNewStatus(data);
+        mainObject.setNewStatus(data);
     }
     
     public startPolling() : void
