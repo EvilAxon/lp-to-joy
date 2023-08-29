@@ -1,6 +1,7 @@
 ﻿import EventEmitter from "events";
 import {Device, InEndpoint, Interface} from "usb";
 var usb = require("usb");
+const { bmRequestType, DIRECTION, TYPE, RECIPIENT } = require('bmrequesttype');
 
 export class ButtonDef
 {
@@ -12,6 +13,32 @@ export class ButtonDef
         this.byte = byte;
         this.bit = bit;
     }
+}
+
+export enum LedStatusDef
+{
+    N_Green = 1 << 0,
+    L_Green = 1 << 1,
+    R_Green = 1 << 2,
+    N_Red = 1 << 3,
+    L_Red = 1 << 4,
+    R_Red = 1 << 5
+}
+
+export enum LedStatus
+{
+    N_Green = LedStatusDef.N_Green,
+    L_Green = LedStatusDef.L_Green,
+    R_Green = LedStatusDef.R_Green,
+    N_Red = LedStatusDef.N_Red,
+    L_Red = LedStatusDef.L_Red,
+    R_Red = LedStatusDef.R_Red,
+    N_Yellow = LedStatusDef.N_Green | LedStatusDef.N_Red,
+    L_Yellow = LedStatusDef.L_Green | LedStatusDef.L_Red,
+    R_Yellow = LedStatusDef.R_Green | LedStatus.R_Red,
+    A_Green = LedStatusDef.N_Green | LedStatusDef.L_Green | LedStatusDef.R_Green,
+    A_Red = LedStatusDef.N_Red | LedStatusDef.L_Red | LedStatusDef.R_Red,
+    A_Yellow = LedStatus.N_Yellow | LedStatus.L_Yellow | LedStatus.R_Yellow,
 }
 
 export class SwitchPanel extends EventEmitter
@@ -52,8 +79,7 @@ export class SwitchPanel extends EventEmitter
     private device:Device|undefined;
     private devInterface:Interface|undefined;
     private devEndpoint:InEndpoint|undefined;
-    
-    
+    private currentLedStatus:Uint8Array = new Uint8Array([0]);
 
     public constructor() 
     {
@@ -123,5 +149,48 @@ export class SwitchPanel extends EventEmitter
             buffer = this.currentStatus;
         return (buffer[button.byte] & button.bit) >0;
     }
+
+    public setGearLedStatus( led:LedStatus, status:boolean ):void
+    {
+        if( status )
+            this.currentLedStatus[0] |= led;
+        else
+            this.currentLedStatus[0] &= ~led;
+        
+        this.sendGearLedStatus();
+    }
+
+    public clearGearLedStatus():void
+    {
+        this.currentLedStatus[0] = 0;
+        this.sendGearLedStatus();
+    }
     
+    public sendGearLedStatus():void 
+    {
+        // Definisci il messaggio di controllo da inviare
+        const bmRType = bmRequestType(DIRECTION.Out, TYPE.Class , RECIPIENT.Interface);
+        console.log(bmRType);
+        const bRequest = 0x09; // Sostituisci con il valore corretto per il tuo caso
+        const wValue = 0x0300; // Valore personalizzato (potrebbe variare)
+        const wIndex = 0x0000; // Indice personalizzato (potrebbe variare)
+        const data = Buffer.from(this.currentLedStatus); // Dati da inviare (un byte)
+        
+        // Invia il messaggio di controllo all'endpoint 0
+        this.device?.controlTransfer(
+            bmRType,
+            bRequest,
+            wValue,
+            wIndex,
+            data,
+            (error) => {
+                if (error) {
+                    console.error('Errore durante il trasferimento di controllo:', error);
+                } else {
+                    console.log('Messaggio di controllo inviato con successo.');
+                }
+            }
+        );
+    }
+
 }

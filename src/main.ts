@@ -1,4 +1,4 @@
-﻿import {ButtonDef, SwitchPanel} from "./SwitchPanel";
+﻿import {ButtonDef, SwitchPanel, LedStatus} from "./SwitchPanel";
 const flatconfig = require("flatconfig");
 const { vJoy, vJoyDevice } = require('vjoy');
 
@@ -47,6 +47,7 @@ if (!vJoy.isEnabled()) {
 
 let device = vJoyDevice.create(config.MAPPINGS.VJOY_NUMBER);
 
+// TO-DO: Error handling if joy button does not exists
 panel.on('buttonPressed', (button:string) =>
 {
     device.buttons[config.MAPPINGS.BUTTON[button]].set(true);
@@ -60,5 +61,6 @@ panel.on('buttonReleased', (button:string) =>
 })
 
 panel.open();
+panel.clearGearLedStatus();
+panel.setGearLedStatus( LedStatus.A_Yellow, false );
 panel.startPolling();
-
