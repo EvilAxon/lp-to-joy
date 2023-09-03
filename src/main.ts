@@ -1,43 +1,29 @@
 ﻿import {ButtonDef, SwitchPanel, LedStatus} from "./SwitchPanel";
-const flatconfig = require("flatconfig");
-const { vJoy, vJoyDevice } = require('vjoy');
+import {ConfigManager} from "./ConfigManager"
+import {MSFSConnector} from "./MSFSConnector";
 
-var defaults = {
-    MAPPINGS: {
-        VJOY_NUMBER: 1,
-        BUTTON: {
-            BAT: 1,
-            ALT: 2,
-            AVIONICS: 3,
-            FUEL: 4,
-            DEICE: 5,
-            PILOT: 6,
-            COWL: 7,
-            PANEL: 8,
-            // Byte 1
-            BEACON: 9,
-            NAV: 10,
-            STROBE: 11,
-            TAXI: 12,
-            LANDING: 13,
-            MAG_OFF: 14,
-            MAG_R: 15,
-            MAG_L: 16,
-            // Byte 2
-            MAG_BOTH: 17,
-            MAG_START: 18,
-            GEAR_UP: 19,
-            GEAR_DOWN: 20       
-        }
-    }
-}
-    
-// read configuration
-// TO-DO: Error handling
-var config = flatconfig.load(defaults,process.cwd()+"/conf.ini");
+const { vJoy, vJoyDevice } = require('vjoy');
 
 // panel setup
 const panel:SwitchPanel = new SwitchPanel();
+// Configuration
+const configManager = new ConfigManager();
+configManager.loadConfig("testPlane");
+// Connection to MSFS
+const msfs = new MSFSConnector();
+
+msfs.connect({
+    retries: Infinity,
+    retryInterval: 5,
+    onConnect: () =>
+    {
+        console.log("Connected to MSFS");
+        msfs.on("planeLoaded", (plane:string) =>
+        {
+            configManager.loadConfig(plane);
+        });
+    }
+});
 
 // VJOY setup
 if (!vJoy.isEnabled()) {
@@ -45,18 +31,18 @@ if (!vJoy.isEnabled()) {
     process.exit();
 }
 
-let device = vJoyDevice.create(config.MAPPINGS.VJOY_NUMBER);
+let device = vJoyDevice.create(configManager.mainConfig.MAPPINGS.VJOY_NUMBER);
 
 // TO-DO: Error handling if joy button does not exists
 panel.on('buttonPressed', (button:string) =>
 {
-    device.buttons[config.MAPPINGS.BUTTON[button]].set(true);
+    device.buttons[configManager.mainConfig.MAPPINGS.BUTTON[button]].set(true);
     console.log("%s pressed", button);
 })
 
 panel.on('buttonReleased', (button:string) =>
 {
-    device.buttons[config.MAPPINGS.BUTTON[button]].set(false);
+    device.buttons[configManager.mainConfig.MAPPINGS.BUTTON[button]].set(false);
     console.log("%s released", button);
 })
 
