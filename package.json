@@ -17,7 +17,7 @@
   "dependencies": {
     "bmrequesttype": "^0.0.5",
     "flatconfig": "^0.4.4",
-    "node-simconnect": "^3.5.0",
+    "msfs-simconnect-api-wrapper": "^2.0.4",
     "vjoy": "^1.3.0"
   }
 }

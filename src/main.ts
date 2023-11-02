@@ -1,4 +1,5 @@
 ﻿import {ButtonDef, SwitchPanel, LedStatus} from "./SwitchPanel";
+
 const flatconfig = require("flatconfig");
 const { vJoy, vJoyDevice } = require('vjoy');
 
@@ -38,6 +39,9 @@ var config = flatconfig.load(defaults,process.cwd()+"/conf.ini");
 
 // panel setup
 const panel:SwitchPanel = new SwitchPanel();
+// MSFS Simconnect
+//const msfs = new MSFS_API();
+
 
 // VJOY setup
 if (!vJoy.isEnabled()) {
