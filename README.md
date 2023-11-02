@@ -20,12 +20,12 @@ Hopefully it will reach a stable and usable stage soon.
 ### Project roadmap
 
 | Feature                                                           | Status |
-|-------------------------------------------------------------------|---|
-| Switch panel button handling                                      | done|
-| Basic vJoy interaction                                            | done |
-| Landing gear lights                                               | done|
-| Simconnect interaction for landing gear lights                    | |
-| Load a different config depending on MSFS loaded plane            ||
+|-------------------------------------------------------------------|--------|
+| Switch panel button handling                                      | done   |
+| Basic vJoy interaction                                            | done   |
+| Landing gear lights                                               | done   |
+| Simconnect interaction for landing gear lights                    |        |
+| Load a different config depending on MSFS loaded plane            | done   |
 | Load a different Mobiflight config depending on MSFS loaded plane ||
 | Windows tray area interaction/windows UI                          ||
 | Build system/windiows executable||
