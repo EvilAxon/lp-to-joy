@@ -44,6 +44,9 @@ export class ConfigManager
                 GEAR_UP: 19,
                 GEAR_DOWN: 20
             }
+        },
+        MOBIFLIGHT: {
+            CONFIGTOLOAD: ""
         }
     }
 
@@ -53,6 +56,7 @@ export class ConfigManager
     private configFolder:string = process.cwd()+"/config/";
     private planesConfigFolder:string = process.cwd()+"/config/planes/";
     private mainConfigFile:string  = this.configFolder + "conf.ini";
+    
     public planesConfig:Record<string, any> =
     {
         "default": this.planesDefault
@@ -76,5 +80,13 @@ export class ConfigManager
             this.planeConfig = this.planesConfig[planeName];
         else
             this.planeConfig = this.planesConfig["default"];
+        
+        if( this.planeConfig.MOBIFLIGHT.CONFIGTOLOAD.trim() != "" )
+            this.loadMobiflightConfig(  this.mainConfig.MOBIFLIGHT.CONFIGPATH+this.planeConfig.MOBIFLIGHT.CONFIGTOLOAD)
+    }
+    
+    public loadMobiflightConfig( configname:string )
+    {
+        
     }
 }
