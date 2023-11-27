@@ -1,15 +1,13 @@
 import {open, Protocol, RecvEvent, RecvEventFilename, RecvException} from 'node-simconnect';
 import EventEmitter from "events";
 
-export enum  EVENT_ID
+export enum EVENT_ID
 {
     AIRCRAFT_LOADED = 1
 }
 
-
 export class MSFSConnector extends EventEmitter
 {
-    
     protected clientName:string = "MSFSConnector";
     protected handle:any;
     public connected:boolean = false;
@@ -18,8 +16,6 @@ export class MSFSConnector extends EventEmitter
     {
         super();
     }
-    
-    
     
     public async connect( opts:any )
     {
