@@ -1,5 +1,6 @@
 ﻿import EventEmitter from "events";
 import psList from 'ps-list';
+const { spawn } = require('child_process');
 
 export class MobiflightHandler extends EventEmitter 
 {
@@ -10,9 +11,12 @@ export class MobiflightHandler extends EventEmitter
         super();
     }
 
-    public startMobiflightWithConfiguration(configfile:string)
+    public startMobiflightWithConfiguration(mobiflightExe:string, configfile:string)
     {
-        process.
+        this.seekAndDestroy( () =>
+        {
+            spawn(mobiflightExe, ["/autoRun",  "/cfg "+configfile]);
+        });
     }
     
     public seekAndDestroy( onProcessKilled )

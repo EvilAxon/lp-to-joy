@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "bmrequesttype": "^0.0.5",
+    "child_process": "^1.0.2",
     "flatconfig": "^0.4.4",
     "msfs-simconnect-api-wrapper": "^2.0.4",
     "ps-list": "^8.1.1",

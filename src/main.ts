@@ -1,6 +1,7 @@
 ﻿import {ButtonDef, SwitchPanel, LedStatus} from "./SwitchPanel";
 import {ConfigManager} from "./ConfigManager"
 import {MSFSConnector} from "./MSFSConnector";
+import {MobiflightHandler} from "./MobiflightHandler";
 
 const { vJoy, vJoyDevice } = require('vjoy');
 
@@ -11,6 +12,10 @@ const configManager = new ConfigManager();
 configManager.loadConfig("testPlane");
 // Connection to MSFS
 const msfs = new MSFSConnector();
+
+const mfh = new MobiflightHandler();
+mfh.startMobiflightWithConfiguration("C:\\Users\\aXon\\AppData\\Local\\MobiFlight\\MobiFlight Connector", "C:\\Users\\aXon\\Documents\\a.mcc");
+
 
 msfs.connect({
     retries: Infinity,
