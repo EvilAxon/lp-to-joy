@@ -1,22 +1,71 @@
 import path from "path";
-
-const flatconfig = require("flatconfig");
 const fs = require("fs");
+
+type  l2jButtonMapping =
+{
+    BAT?: number;
+    ALT?: number;
+    AVIONICS?: number;
+    FUEL?: number;
+    DEICE?: number;
+    PILOT?: number;
+    COWL?: number;
+    PANEL?: number;
+    // Byte 1
+    BEACON?: number;
+    NAV?: number;
+    STROBE?: number;
+    TAXI?: number;
+    LANDING?: number;
+    MAG_OFF?: number;
+    MAG_R?: number;
+    MAG_L?: number;
+    // Byte 2
+    MAG_BOTH?: number;
+    MAG_START?: number;
+    GEAR_UP?: number;
+    GEAR_DOWN?: number;
+}
+
+type l2jMappings = 
+{
+    VJOY_NUMBER?: string;
+    BUTTON?: l2jButtonMapping;
+}
+
+type l2jMobiflightConf =
+{
+    EXEPATH?: string;
+    CONFIGPATH?: string;
+}
+
+type l2jMainConf =
+{
+    MAPPINGS?: l2jMappings;
+    MOBIFLIGHT?: l2jMobiflightConf;
+}
+
+type l2jPlaneConf =
+{
+    MAPPINGS?: l2jMappings;
+    MOBIFLIGHT?: l2jMobiflightConf;
+}
 
 export class ConfigManager
 {
 
-    public confDefault =
+    public confDefault:l2jMainConf = 
     {
         MAPPINGS: {
             VJOY_NUMBER: 1
         },
         MOBIFLIGHT: {
+            EXEPATH: "",
             CONFIGPATH: "./"
         }
     }
     
-    public planesDefault = 
+    public planesDefault:l2jPlaneConf = 
     {
         MAPPINGS: {
             VJOY_NUMBER: 1,
@@ -50,8 +99,8 @@ export class ConfigManager
         }
     }
 
-    public mainConfig:any = {};
-    public planeConfig:any = {};
+    public mainConfig:object = {};
+    public planeConfig:object = {};
 
     private configFolder:string = process.cwd()+"/config/";
     private planesConfigFolder:string = process.cwd()+"/config/planes/";
@@ -66,11 +115,15 @@ export class ConfigManager
     {
         // read configuration
         // TO-DO: Error handling
-        this.mainConfig = flatconfig.load(this.confDefault, this.mainConfigFile);
+        
+        var newConf:object = JSON.parse(fs.readdirSync(this.confDefault));
+        this.mainConfig ={ ...this.mainConfig, ...newConf};
+
         fs.readdirSync( this.planesConfigFolder ).forEach( (configFile:string) =>
         {
             const keyName = path.parse(configFile).name; 
-            this.planesConfig[keyName] = flatconfig.load(this.planesDefault, this.planesConfigFolder+configFile);
+            var newPlaneConfig:object = JSON.parse(fs.readdirSync(this.planesConfigFolder+configFile));
+            this.planesConfig[keyName] = {...this.planesDefault, ...newPlaneConfig};
         });
     }
     

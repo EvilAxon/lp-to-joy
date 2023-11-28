@@ -1,0 +1,33 @@
+{
+  "MAPPINGS": 
+  {
+    "VJOY_NUMBER": 1,
+    "BUTTON": 
+    {
+      "BAT": 1,
+      "ALT": 2,
+      "AVIONICS": 3,
+      "FUEL": 4,
+      "DEICE": 5,
+      "PILOT": 6,
+      "COWL": 7,
+      "PANEL": 8,
+      "BEACON": 9,
+      "NAV": 10,
+      "STROBE": 11,
+      "TAXI": 12,
+      "LANDING": 13,
+      "MAG_OFF": 14,
+      "MAG_R": 15,
+      "MAG_L": 16,
+      "MAG_BOTH": 17,
+      "MAG_START": 18,
+      "GEAR_UP": 19,
+      "GEAR_DOWN": 20
+    }
+  },
+  "MOBIFLIGHT": 
+  {
+    "CONFIGTOLOAD": ""
+  }
+}

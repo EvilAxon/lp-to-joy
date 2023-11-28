@@ -1,0 +1,11 @@
+﻿{
+    "MAPPINGS": 
+    {
+        "VJOY_NUMBER": 1
+    },
+    "MOBIFLIGHT": 
+    {
+        "EXEPATH": "",
+        "CONFIGPATH": "./"
+    }
+}
